@@ -1,0 +1,28 @@
+.ip-list { font-size: 0.8em; color: #ff9800; list-style: none; padding: 0; }
+.ip-list li { margin: 5px 0; border-bottom: 1px solid #444; }
+
+<div class="stat">
+    <span class="label">Всего запросов</span>
+    <span id="total-req" class="value">0</span>
+</div>
+<div class="stat">
+    <span class="label">Последние IP</span>
+    <ul id="ip-log" class="ip-list"></ul>
+</div>
+
+<script>
+    async function updateStats() {
+        try {
+            // Замени localhost на IP своего сервера, когда выставишь его в сеть
+            const response = await fetch('http://localhost:3000/stats');
+            const data = await response.json();
+            
+            document.getElementById('total-req').textContent = data.total;
+            const log = document.getElementById('ip-log');
+            log.innerHTML = data.recentIps.map(ip => `<li>${ip}</li>`).join('');
+        } catch (e) {
+            console.log("Ждем бэкенд...");
+        }
+    }
+    setInterval(updateStats, 1000); // Обновляем инфу каждую секунду
+</script>
